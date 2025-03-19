@@ -8,7 +8,7 @@ from crawl4ai import AsyncWebCrawler
 from crawl4ai.extraction_strategy import JsonCssExtractionStrategy
 from crawl4ai.async_configs import BrowserConfig, CrawlerRunConfig
 import json
-
+# todo todo...
 
 async def extract_amazon_products():
     # Initialize browser config
