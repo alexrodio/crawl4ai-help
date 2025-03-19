@@ -18,66 +18,30 @@ async def extract_amazon_products():
     crawler_config = CrawlerRunConfig(
         extraction_strategy=JsonCssExtractionStrategy(
             schema={
-                "name": "Amazon Product Search Results",
-                "baseSelector": "[data-component-type='s-search-result']",
+                "name": "Product Details",
+                "baseSelector": "div.site-content-container",
                 "fields": [
-                    {
-                        "name": "asin",
-                        "selector": "",
-                        "type": "attribute",
-                        "attribute": "data-asin",
-                    },
-                    {"name": "title", "selector": "h2 a span", "type": "text"},
-                    {
-                        "name": "url",
-                        "selector": "h2 a",
-                        "type": "attribute",
-                        "attribute": "href",
-                    },
-                    {
-                        "name": "image",
-                        "selector": ".s-image",
-                        "type": "attribute",
-                        "attribute": "src",
-                    },
-                    {
-                        "name": "rating",
-                        "selector": ".a-icon-star-small .a-icon-alt",
-                        "type": "text",
-                    },
-                    {
-                        "name": "reviews_count",
-                        "selector": "[data-csa-c-func-deps='aui-da-a-popover'] ~ span span",
-                        "type": "text",
-                    },
-                    {
-                        "name": "price",
-                        "selector": ".a-price .a-offscreen",
-                        "type": "text",
-                    },
-                    {
-                        "name": "original_price",
-                        "selector": ".a-price.a-text-price .a-offscreen",
-                        "type": "text",
-                    },
-                    {
-                        "name": "sponsored",
-                        "selector": ".puis-sponsored-label-text",
-                        "type": "exists",
-                    },
-                    {
-                        "name": "delivery_info",
-                        "selector": "[data-cy='delivery-recipe'] .a-color-base",
-                        "type": "text",
-                        "multiple": True,
-                    },
-                ],
-            }
-        )
-    )
+                    {"name": "title", "selector": ".subject span[data-field='subject']", "type": "text"},
+                    {"name": "id__num", "selector": ".viewbull-bulletin-id__num", "type": "text"},
+                    {"name": "price", "selector": ".viewbull-summary-price__value", "type": "text"},
+                    {"name": "availability", "selector": ".viewbull-field__container span[data-field='goodPresentState']", "type": "text"},
+                    {"name": "condition", "selector": ".viewbull-field__container span[data-field='condition']", "type": "text"},
+                    {"name": "manufacturer", "selector": ".viewbull-field__container span[data-field='manufacturer']", "type": "text"},
+                    {"name": "part_number", "selector": ".viewbull-field__container span[data-field='autoPartsOemNumber']", "type": "text"},
+                    {"name": "part_number_ZAMENA", "selector": "ul.oem-numbers__list[data-field='autoPartsSubstituteNumbers']", "type": "text"},
+                    {"name": "compatibility", "selector": ".viewbull-field__container ul[data-field='autoPartsCompatibility'] li", "type": "text"},
+                    {"name": "seller_name", "selector": ".seller-summary-user a", "type": "text"},
+                    {"name": "image_urls", "selector": "div.image-gallery__big-image-container img", "type": "attribute", "attribute": "src", "multiple": True},
+                    {"name": "image_descriptions", "selector": "div.image-gallery__big-image-container img", "type": "attribute", "attribute": "alt", "multiple": True},
+                    {"name": "article_text", "selector": ".bulletinText.viewbull-field__container.auto-shy p[data-field='text']", "type": "text"}
+                    ]
+                    }
+                )
+            )
+
 
     # Example search URL (you should replace with your actual Amazon URL)
-    url = "https://www.amazon.com/s?k=Samsung+Galaxy+Tab"
+    url = "https://baza.drom.ru/novosibirsk/sell_spare_parts/bolt-mahovika-baw-bav-fenix-fenix-1044-evro-2-14mm-sht-495qa-05-010-g3616651496.html"
 
     # Use context manager for proper resource handling
     async with AsyncWebCrawler(config=browser_config) as crawler:
@@ -92,8 +56,8 @@ async def extract_amazon_products():
             # Process each product in the list
             for product in products:
                 print("\nProduct Details:")
-                print(f"ASIN: {product.get('asin')}")
-                print(f"Title: {product.get('title')}")
+                print(f"id__num: {product.get('asin')}")
+                print(f"title: {product.get('title')}")
                 print(f"Price: {product.get('price')}")
                 print(f"Original Price: {product.get('original_price')}")
                 print(f"Rating: {product.get('rating')}")
