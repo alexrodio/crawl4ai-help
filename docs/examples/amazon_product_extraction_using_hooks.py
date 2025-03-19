@@ -1,90 +1,60 @@
-"""
-This example demonstrates how to use JSON CSS extraction to scrape product information 
-from Amazon search results. It shows how to extract structured data like product titles,
-prices, ratings, and other details using CSS selectors.
-"""
-
 from crawl4ai import AsyncWebCrawler, CacheMode
 from crawl4ai.extraction_strategy import JsonCssExtractionStrategy
 from crawl4ai.async_configs import BrowserConfig, CrawlerRunConfig
 import json
 from playwright.async_api import Page, BrowserContext
 
-
-async def extract_amazon_products():
+async def extract_drom_products():
     # Initialize browser config
     browser_config = BrowserConfig(
-        # browser_type="chromium",
         headless=False
     )
 
-    # Initialize crawler config with JSON CSS extraction strategy nav-search-submit-button
+    # Initialize crawler config with JSON CSS extraction strategy
     crawler_config = CrawlerRunConfig(
         cache_mode=CacheMode.BYPASS,
         extraction_strategy=JsonCssExtractionStrategy(
             schema={
-                "name": "Amazon Product Search Results",
-                "baseSelector": "[data-component-type='s-search-result']",  # Базовый селектор для карточки товара
+                "name": "Drom Product Search Results",
+                "baseSelector": ".bull-item",  # Базовый селектор для карточки товара
                 "fields": [
                     {
-                        "name": "asin",
-                        "selector": "",
-                        "type": "attribute",
-                        "attribute": "data-asin",  # ASIN обычно хранится в атрибуте data-asin
+                        "name": "title",
+                        "selector": ".bull-item__self-link",  # Селектор для заголовка
+                        "type": "text",
                     },
                     {
-                        "name": "title",
-                        "selector": "h2.a-size-medium.a-color-base.a-text-normal",  # Селектор для заголовка
+                        "name": "price",
+                        "selector": ".price-block__price",  # Селектор для цены
                         "type": "text",
                     },
                     {
                         "name": "url",
-                        "selector": "h2 a.a-link-normal",  # Селектор для ссылки на товар
+                        "selector": ".bull-item__self-link",  # Селектор для ссылки на товар
                         "type": "attribute",
                         "attribute": "href",
                     },
                     {
                         "name": "image",
-                        "selector": ".s-image",  # Селектор для изображения товара
+                        "selector": ".bull-image-container img",  # Селектор для изображения товара
                         "type": "attribute",
                         "attribute": "src",
                     },
                     {
-                        "name": "rating",
-                        "selector": ".a-icon-star-small .a-icon-alt",  # Селектор для рейтинга
-                        "type": "text",
-                    },
-                    {
-                        "name": "reviews_count",
-                        "selector": ".a-size-small.s-underline-text",  # Селектор для количества отзывов
-                        "type": "text",
-                    },
-                    {
-                        "name": "price",
-                        "selector": ".a-price .a-offscreen",  # Селектор для текущей цены
-                        "type": "text",
-                    },
-                    {
-                        "name": "original_price",
-                        "selector": ".a-price.a-text-price .a-offscreen",
-                        # Селектор для оригинальной цены (если есть скидка)
-                        "type": "text",
-                    },
-                    {
-                        "name": "sponsored",
-                        "selector": ".puis-sponsored-label-text",  # Селектор для спонсируемых товаров
-                        "type": "exists",
-                    },
-                    {
                         "name": "delivery_info",
-                        "selector": "[data-cy='delivery-recipe'] .a-color-base",  # Селектор для информации о доставке
+                        "selector": ".bull-delivery",  # Селектор для информации о доставке
                         "type": "text",
                         "multiple": True,
+                    },
+                    {
+                        "name": "seller",
+                        "selector": ".ellipsis-text__left-side",  # Селектор для продавца
+                        "type": "text",
                     },
                 ],
             }))
 
-    url = "https://www.amazon.com/"
+    url = "https://baza.drom.ru/sell_spare_parts/model/shaanxi/"
 
     async def after_goto(
         page: Page, context: BrowserContext, url: str, response: dict, **kwargs
@@ -93,27 +63,9 @@ async def extract_amazon_products():
         print(f"[HOOK] after_goto - Successfully loaded: {url}")
 
         try:
-            # Wait for search box to be available
-            search_box = await page.wait_for_selector(
-                "#twotabsearchtextbox", timeout=1000
-            )
-
-            # Type the search query
-            await search_box.fill("Samsung Galaxy Tab")
-
-            # Get the search button and prepare for navigation
-            search_button = await page.wait_for_selector(
-                "#nav-search-submit-button", timeout=1000
-            )
-
-            # Click with navigation waiting
-            await search_button.click()
-
             # Wait for search results to load
-            await page.wait_for_selector(
-                '[data-component-type="s-search-result"]', timeout=10000
-            )
-            print("[HOOK] Search completed and results loaded!")
+            await page.wait_for_selector('.bull-item', timeout=10000)
+            print("[HOOK] Search results loaded!")
 
         except Exception as e:
             print(f"[HOOK] Error during search operation: {str(e)}")
@@ -135,19 +87,16 @@ async def extract_amazon_products():
             # Process each product in the list
             for product in products:
                 print("\nProduct Details:")
-                print(f"ASIN: {product.get('asin')}")
                 print(f"Title: {product.get('title')}")
                 print(f"Price: {product.get('price')}")
-                print(f"Original Price: {product.get('original_price')}")
-                print(f"Rating: {product.get('rating')}")
-                print(f"Reviews: {product.get('reviews_count')}")
-                print(f"Sponsored: {'Yes' if product.get('sponsored') else 'No'}")
+                print(f"URL: {product.get('url')}")
                 if product.get("delivery_info"):
                     print(f"Delivery: {' '.join(product['delivery_info'])}")
+                print(f"Seller: {product.get('seller')}")
                 print("-" * 80)
 
 
 if __name__ == "__main__":
     import asyncio
 
-    asyncio.run(extract_amazon_products())
+    asyncio.run(extract_drom_products())
