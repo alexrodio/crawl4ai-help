@@ -2,7 +2,7 @@ import pytest
 from unittest.mock import AsyncMock, patch
 from amazon_product_extraction_direct_url import extract_amazon_products  # Замените amazon_parser на имя вашего файла
 import json
-
+# todo добавил тоду
 
 @pytest.mark.asyncio
 @patch('amazon_parser.AsyncWebCrawler')  # Замените amazon_parser
