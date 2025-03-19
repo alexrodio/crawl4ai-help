@@ -53,19 +53,42 @@ async def extract_amazon_products():
             # Parse the JSON string into a list of products
             products = json.loads(result.extracted_content)
 
-            # Process each product in the list
-            for product in products:
-                print("\nProduct Details:")
-                print(f"id__num: {product.get('asin')}")
-                print(f"title: {product.get('title')}")
-                print(f"Price: {product.get('price')}")
-                print(f"Original Price: {product.get('original_price')}")
-                print(f"Rating: {product.get('rating')}")
-                print(f"Reviews: {product.get('reviews_count')}")
-                print(f"Sponsored: {'Yes' if product.get('sponsored') else 'No'}")
-                if product.get("delivery_info"):
-                    print(f"Delivery: {' '.join(product['delivery_info'])}")
-                print("-" * 80)
+            # После получения результата парсинга (result.extracted_content)
+            if result and result.extracted_content:
+                products = json.loads(result.extracted_content)
+
+                for product in products:
+                    print("\n" + "=" * 50)
+                    print(f"🆔 ID: {product.get('id__num', 'N/A')}")
+                    print(f"📛 Название: {product.get('title', 'N/A')}")
+                    print(f"💰 Цена: {product.get('price', 'N/A')}")
+                    print(f"📦 Наличие: {product.get('availability', 'N/A')}")
+                    print(f"⭐ Состояние: {product.get('condition', 'N/A')}")
+                    print(f"🏭 Производитель: {product.get('manufacturer', 'N/A')}")
+                    print(f"🔧 Парт-номер: {product.get('part_number', 'N/A')}")
+
+                    if substitutes := product.get('part_number_ZAMENA'):
+                        print(f"🔄 Замены: {', '.join(substitutes)}")
+
+                    if compatibility := product.get('compatibility'):
+                        print("\n🚗 Совместимость:")
+                        for item in compatibility:
+                            print(f" - {item}")
+
+                    print(f"\n🏷️ Продавец: {product.get('seller_name', 'N/A')}")
+
+                    if images := product.get('image_urls'):
+                        print("\n📸 Изображения:")
+                        for img, desc in zip(images, product.get('image_descriptions', [])):
+                            print(f"  URL: {img}")
+                            print(f"  Описание: {desc}")
+                            print("-" * 30)
+
+                    if text := product.get('article_text'):
+                        print("\n📄 Описание товара:")
+                        print(text.strip())
+
+                    print("=" * 50 + "\n")
 
 
 if __name__ == "__main__":
