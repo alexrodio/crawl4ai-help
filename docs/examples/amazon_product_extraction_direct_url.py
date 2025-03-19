@@ -53,19 +53,51 @@ async def extract_amazon_products():
             # Parse the JSON string into a list of products
             products = json.loads(result.extracted_content)
 
-            # Process each product in the list
-            for product in products:
-                print("\nProduct Details:")
-                print(f"id__num: {product.get('asin')}")
-                print(f"title: {product.get('title')}")
-                print(f"Price: {product.get('price')}")
-                print(f"Original Price: {product.get('original_price')}")
-                print(f"Rating: {product.get('rating')}")
-                print(f"Reviews: {product.get('reviews_count')}")
-                print(f"Sponsored: {'Yes' if product.get('sponsored') else 'No'}")
-                if product.get("delivery_info"):
-                    print(f"Delivery: {' '.join(product['delivery_info'])}")
-                print("-" * 80)
+            # После получения результата парсинга (result.extracted_content)
+            if result and result.extracted_content:
+                products = json.loads(result.extracted_content)
+
+                for product in products:
+                    def print_product_details(data):
+                        """Выводит информацию о продукте на экран в читаемом формате."""
+                        print("Информация о продукте:")
+                        print(f"Заголовок: {data.get('title', 'Не найдено')}")
+                        print(f"Идентификатор: {data.get('id__num', 'Не найдено')}")
+                        print(f"Цена: {data.get('price', 'Не найдено')}")
+                        print(f"Наличие: {data.get('availability', 'Не найдено')}")
+                        print(f"Состояние: {data.get('condition', 'Не найдено')}")
+                        print(f"Производитель: {data.get('manufacturer', 'Не найдено')}")
+                        print(f"Номер детали: {data.get('part_number', 'Не найдено')}")
+                        print(f"Номер детали (замена): {data.get('part_number_ZAMENA', 'Не найдено')}")
+
+                        print("Совместимость:")
+                        compatibility = data.get('compatibility', [])
+                        if compatibility:
+                            for item in compatibility:
+                                print(f" - {item}")
+                        else:
+                            print(" - Не найдено")
+
+                        print(f"Имя продавца: {data.get('seller_name', 'Не найдено')}")
+
+                        print("URL изображений:")
+                        image_urls = data.get('image_urls', [])
+                        if image_urls:
+                            for url in image_urls:
+                                print(f" - {url}")
+                        else:
+                            print(" - Не найдено")
+
+                        print("Описания изображений:")
+                        image_descriptions = data.get('image_descriptions', [])
+                        if image_descriptions:
+                            for desc in image_descriptions:
+                                print(f" - {desc}")
+                        else:
+                            print(" - Не найдено")
+
+                        print(f"Текст статьи: {data.get('article_text', 'Не найдено')}")
+                    print_product_details(product)
 
 
 if __name__ == "__main__":
