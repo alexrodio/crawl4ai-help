@@ -1,11 +1,11 @@
 import pytest
 from unittest.mock import AsyncMock, patch
-from amazon_product_extraction_direct_url import extract_amazon_products  # Замените your_module
+from amazon_product_extraction_direct_url import extract_amazon_products  # Замените amazon_parser на имя вашего файла
 import json
 
 
 @pytest.mark.asyncio
-@patch('crawl4ai.AsyncWebCrawler')
+@patch('amazon_parser.AsyncWebCrawler')  # Замените amazon_parser
 async def test_successful_parsing(mock_crawler):
     # Мокаем ответ краулера
     mock_response = AsyncMock()
@@ -24,11 +24,11 @@ async def test_successful_parsing(mock_crawler):
     await extract_amazon_products()
 
     # Проверяем вызовы
-    mock_crawler.return_value.arun.assert_called_once()
+    mock_crawler.return_value.__aenter__.return_value.arun.assert_called_once()
 
 
 @pytest.mark.asyncio
-@patch('crawl4ai.AsyncWebCrawler')
+@patch('amazon_parser.AsyncWebCrawler')  # Замените amazon_parser
 async def test_empty_response(mock_crawler):
     mock_response = AsyncMock()
     mock_response.extracted_content = None
@@ -40,7 +40,7 @@ async def test_empty_response(mock_crawler):
 
 
 @pytest.mark.asyncio
-@patch('crawl4ai.AsyncWebCrawler')
+@patch('amazon_parser.AsyncWebCrawler')  # Замените amazon_parser
 async def test_invalid_json(mock_crawler):
     mock_response = AsyncMock()
     mock_response.extracted_content = "INVALID JSON"
