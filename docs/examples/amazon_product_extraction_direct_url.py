@@ -69,14 +69,7 @@ async def extract_amazon_products():
                         print(f"Производитель: {data.get('manufacturer', 'Не найдено')}")
                         print(f"Номер детали: {data.get('part_number', 'Не найдено')}")
                         print(f"Номер детали (замена): {data.get('part_number_ZAMENA', 'Не найдено')}")
-
-                        print("Совместимость:")
-                        compatibility = data.get('compatibility', [])
-                        if compatibility:
-                            for item in compatibility:
-                                print(f" - {item}")
-                        else:
-                            print(" - Не найдено")
+                        print(f"совместимость: {data.get('compatibility')}")
 
                         print(f"Имя продавца: {data.get('seller_name', 'Не найдено')}")
 
