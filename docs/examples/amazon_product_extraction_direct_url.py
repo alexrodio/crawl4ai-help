@@ -66,14 +66,10 @@ async def extract_amazon_products():
                     print(f"⭐ Состояние: {product.get('condition', 'N/A')}")
                     print(f"🏭 Производитель: {product.get('manufacturer', 'N/A')}")
                     print(f"🔧 Парт-номер: {product.get('part_number', 'N/A')}")
+                    print(f"🔧 Совместимость: {product.get('compatibility', 'N/A')}")
 
                     if substitutes := product.get('part_number_ZAMENA'):
                         print(f"🔄 Замены: {', '.join(substitutes)}")
-
-                    if compatibility := product.get('compatibility'):
-                        print("\n🚗 Совместимость:")
-                        for item in compatibility:
-                            print(f" - {item}")
 
                     print(f"\n🏷️ Продавец: {product.get('seller_name', 'N/A')}")
 
