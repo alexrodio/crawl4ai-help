@@ -15,7 +15,7 @@ async def extract_amazon_products():
     # Initialize browser config
     browser_config = BrowserConfig(
         # browser_type="chromium",
-        headless=True
+        headless=False
     )
 
     # Initialize crawler config with JSON CSS extraction strategy nav-search-submit-button
@@ -24,62 +24,65 @@ async def extract_amazon_products():
         extraction_strategy=JsonCssExtractionStrategy(
             schema={
                 "name": "Amazon Product Search Results",
-                "baseSelector": "[data-component-type='s-search-result']",
+                "baseSelector": "[data-component-type='s-search-result']",  # Базовый селектор для карточки товара
                 "fields": [
                     {
                         "name": "asin",
                         "selector": "",
                         "type": "attribute",
-                        "attribute": "data-asin",
+                        "attribute": "data-asin",  # ASIN обычно хранится в атрибуте data-asin
                     },
-                    {"name": "title", "selector": "h2 a span", "type": "text"},
+                    {
+                        "name": "title",
+                        "selector": "h2.a-size-medium.a-color-base.a-text-normal",  # Селектор для заголовка
+                        "type": "text",
+                    },
                     {
                         "name": "url",
-                        "selector": "h2 a",
+                        "selector": "h2 a.a-link-normal",  # Селектор для ссылки на товар
                         "type": "attribute",
                         "attribute": "href",
                     },
                     {
                         "name": "image",
-                        "selector": ".s-image",
+                        "selector": ".s-image",  # Селектор для изображения товара
                         "type": "attribute",
                         "attribute": "src",
                     },
                     {
                         "name": "rating",
-                        "selector": ".a-icon-star-small .a-icon-alt",
+                        "selector": ".a-icon-star-small .a-icon-alt",  # Селектор для рейтинга
                         "type": "text",
                     },
                     {
                         "name": "reviews_count",
-                        "selector": "[data-csa-c-func-deps='aui-da-a-popover'] ~ span span",
+                        "selector": ".a-size-small.s-underline-text",  # Селектор для количества отзывов
                         "type": "text",
                     },
                     {
                         "name": "price",
-                        "selector": ".a-price .a-offscreen",
+                        "selector": ".a-price .a-offscreen",  # Селектор для текущей цены
                         "type": "text",
                     },
                     {
                         "name": "original_price",
                         "selector": ".a-price.a-text-price .a-offscreen",
+                        # Селектор для оригинальной цены (если есть скидка)
                         "type": "text",
                     },
                     {
                         "name": "sponsored",
-                        "selector": ".puis-sponsored-label-text",
+                        "selector": ".puis-sponsored-label-text",  # Селектор для спонсируемых товаров
                         "type": "exists",
                     },
                     {
                         "name": "delivery_info",
-                        "selector": "[data-cy='delivery-recipe'] .a-color-base",
+                        "selector": "[data-cy='delivery-recipe'] .a-color-base",  # Селектор для информации о доставке
                         "type": "text",
                         "multiple": True,
                     },
                 ],
-            }
-        ),
-    )
+            }))
 
     url = "https://www.amazon.com/"
 
