@@ -4,6 +4,8 @@ from crawl4ai.async_configs import BrowserConfig, CrawlerRunConfig
 import json
 from playwright.async_api import Page, BrowserContext
 
+#todo предусмотреть вывод всех стро а не только 10
+
 async def extract_drom_products():
     # Конфигурация браузера
     browser_config = BrowserConfig(
