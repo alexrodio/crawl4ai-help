@@ -7,9 +7,18 @@ from playwright.async_api import Page, BrowserContext
 #todo предусмотреть вывод всех стро а не только 10 GROK
 
 async def extract_drom_products():
-    # Конфигурация браузера
+    # Конфигурация прокси
+    proxy_config = {
+        "server": "la.residential.rayobyte.com:8000",
+        "username": "1_tcrossa_ru-dc",
+        "password": "iTjnzJt7divd4VA4sQYxwWOcBCMc"
+    }
+
+
+    # Initialize browser config
     browser_config = BrowserConfig(
-        headless=False
+        headless=False,
+        proxy_config=proxy_config
     )
 
     # Конфигурация краулера с новой схемой
