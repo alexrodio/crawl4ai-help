@@ -11,8 +11,16 @@ import json
 
 
 async def extract_amazon_products():
+
+    # Конфигурация прокси
+    proxy_config = {
+        "server": "la.residential.rayobyte.com:8000",
+        "username": "1_tcrossa_ru-dc",
+        "password": "iTjnzJt7divd4VA4sQYxwWOcBCMc"
+    }
+
     # Initialize browser config
-    browser_config = BrowserConfig(browser_type="chromium", headless=True)
+    browser_config = BrowserConfig(browser_type="chromium", headless=False,proxy_config=proxy_config)
 
     # Initialize crawler config with JSON CSS extraction strategy
     crawler_config = CrawlerRunConfig(

@@ -5,9 +5,19 @@ import json
 from playwright.async_api import Page, BrowserContext
 #todo deep не вводит результаты поиска и показывает сразу все - это надо исправить.
 async def extract_drom_products():
+
+    # Конфигурация прокси
+    proxy_config = {
+        "server": "la.residential.rayobyte.com:8000",
+        "username": "1_tcrossa_ru-dc",
+        "password": "iTjnzJt7divd4VA4sQYxwWOcBCMc"
+    }
+
+
     # Initialize browser config
     browser_config = BrowserConfig(
-        headless=False
+        headless=False,
+        proxy_config=proxy_config
     )
 
     # Initialize crawler config with JSON CSS extraction strategy
