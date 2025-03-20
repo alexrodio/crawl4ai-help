@@ -3,7 +3,7 @@ from crawl4ai.extraction_strategy import JsonCssExtractionStrategy
 from crawl4ai.async_configs import BrowserConfig, CrawlerRunConfig
 import json
 from playwright.async_api import Page, BrowserContext
-#todo проверить результат вывода код выводит все и не ищет DEEP
+#todo deep не вводит результаты поиска и показывает сразу все - это надо исправить.
 async def extract_drom_products():
     # Initialize browser config
     browser_config = BrowserConfig(
